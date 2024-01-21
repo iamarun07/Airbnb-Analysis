@@ -10,7 +10,7 @@ pd.set_option('display.max_columns', None)
 def streamlit_config():
 
     # page configuration
-    page_icon_url = 'https://raw.githubusercontent.com/arunashokan/Airbnb-Analysis/main/airbnb_logo.png'
+    page_icon_url = 'https://raw.githubusercontent.com/arunraja/Airbnb-Analysis/main/airbnb_logo.png'
     st.set_page_config(page_title='Airbnb',
                        page_icon=page_icon_url, layout="wide")
 
@@ -33,7 +33,7 @@ def streamlit_config():
 
 
 class data_collection:
-    arun = pymongo.MongoClient("mongodb://arunashokan:arunroot@ac-0vdscni-shard-00-00.xdp3lkp.mongodb.net:27017,ac-0vdscni-shard-00-01.xdp3lkp.mongodb.net:27017,ac-0vdscni-shard-00-02.xdp3lkp.mongodb.net:27017/?ssl=true&replicaSet=atlas-11e4qv-shard-0&authSource=admin&retryWrites=true&w=majority")
+    arun = pymongo.MongoClient("mongodb://arunraja:arunroot@ac-0vdscni-shard-00-00.xdp3lkp.mongodb.net:27017,ac-0vdscni-shard-00-01.xdp3lkp.mongodb.net:27017,ac-0vdscni-shard-00-02.xdp3lkp.mongodb.net:27017/?ssl=true&replicaSet=atlas-11e4qv-shard-0&authSource=admin&retryWrites=true&w=majority")
     db = arun['sample_airbnb']
     col = db['listingsAndReviews']
 
@@ -904,7 +904,7 @@ st.write('')
 
 
 with st.sidebar:
-    image_url = 'https://raw.githubusercontent.com/arunashokan/Airbnb-Analysis/main/airbnb_banner.jpg'
+    image_url = 'https://raw.githubusercontent.com/arunraja/Airbnb-Analysis/main/airbnb_banner.jpg'
     st.image(image_url, use_column_width=True)
 
     option = option_menu(menu_title='', options=['Migrating to SQL', 'Features Analysis', 'Host Analysis', 'Exit'],
