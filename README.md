@@ -1,4 +1,4 @@
-# Airbnb_Analysis
+# Airbnb Analysis
 
 **Introduction**
 
@@ -76,4 +76,3 @@ Create a comprehensive Tableau dashboard to visually analyze Airbnb data, with a
 **Contributing**
 
 Contributions to this project are welcome! If you encounter any issues or have suggestions for improvements, please feel free to submit a pull request.
-
