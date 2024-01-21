@@ -10,7 +10,7 @@ pd.set_option('display.max_columns', None)
 def streamlit_config():
 
     # page configuration
-    page_icon_url = 'https://raw.githubusercontent.com/gopiashokan/Airbnb-Analysis/main/airbnb_logo.png'
+    page_icon_url = 'https://raw.githubusercontent.com/arunashokan/Airbnb-Analysis/main/airbnb_logo.png'
     st.set_page_config(page_title='Airbnb',
                        page_icon=page_icon_url, layout="wide")
 
@@ -33,8 +33,8 @@ def streamlit_config():
 
 
 class data_collection:
-    gopi = pymongo.MongoClient("mongodb://gopiashokan:gopiroot@ac-0vdscni-shard-00-00.xdp3lkp.mongodb.net:27017,ac-0vdscni-shard-00-01.xdp3lkp.mongodb.net:27017,ac-0vdscni-shard-00-02.xdp3lkp.mongodb.net:27017/?ssl=true&replicaSet=atlas-11e4qv-shard-0&authSource=admin&retryWrites=true&w=majority")
-    db = gopi['sample_airbnb']
+    arun = pymongo.MongoClient("mongodb://arunashokan:arunroot@ac-0vdscni-shard-00-00.xdp3lkp.mongodb.net:27017,ac-0vdscni-shard-00-01.xdp3lkp.mongodb.net:27017,ac-0vdscni-shard-00-02.xdp3lkp.mongodb.net:27017/?ssl=true&replicaSet=atlas-11e4qv-shard-0&authSource=admin&retryWrites=true&w=majority")
+    db = arun['sample_airbnb']
     col = db['listingsAndReviews']
 
 
@@ -194,11 +194,11 @@ class data_preprocessing:
 class sql:
 
     def create_table():
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         cursor.execute(f"""create table if not exists airbnb(
                             _id					varchar(255) primary key,
                             listing_url			text,
@@ -251,33 +251,33 @@ class sql:
                             availability_365	int,
                             amenities			text);""")
 
-        gopi.commit()
-        gopi.close()
+        arun.commit()
+        arun.close()
 
     def data_migration():
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         df = data_preprocessing.merge_dataframe()
 
         cursor.executemany("insert into airbnb \
                             values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,\
                                    %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,\
                                    %s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", df.values.tolist())
-        gopi.commit()
-        gopi.close()
+        arun.commit()
+        arun.close()
 
     def delete_table():
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         cursor.execute(f"""delete from airbnb;""")
-        gopi.commit()
-        gopi.close()
+        arun.commit()
+        arun.close()
 
 
 class plotly:
@@ -360,17 +360,17 @@ class plotly:
 class feature:
 
     def feature(column_name, order='count desc', limit=10):
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         cursor.execute(f"""select distinct {column_name}, count({column_name}) as count
                            from airbnb
                            group by {column_name}
                            order by {order}
                            limit {limit};""")
-        gopi.commit()
+        arun.commit()
         s = cursor.fetchall()
         i = [i for i in range(1, len(s)+1)]
         data = pd.DataFrame(s, columns=[column_name, 'count'], index=i)
@@ -382,18 +382,18 @@ class feature:
         return data
 
     def cleaning_fee():
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         cursor.execute(f"""select distinct cleaning_fee, count(cleaning_fee) as count
                            from airbnb
                            where cleaning_fee != 'Not Specified'
                            group by cleaning_fee
                            order by count desc
                            limit 10;""")
-        gopi.commit()
+        arun.commit()
         s = cursor.fetchall()
         i = [i for i in range(1, len(s)+1)]
         data = pd.DataFrame(s, columns=['cleaning_fee', 'count'], index=i)
@@ -405,15 +405,15 @@ class feature:
         return data
 
     def location():
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         cursor.execute(f"""select host_id, country, longitude, latitude
                            from airbnb
                            group by host_id, country, longitude, latitude""")
-        gopi.commit()
+        arun.commit()
         s = cursor.fetchall()
         i = [i for i in range(1, len(s)+1)]
         data = pd.DataFrame(
@@ -590,15 +590,15 @@ class feature:
 class host:
 
     def countries_list():
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         cursor.execute(f"""select distinct country
                            from airbnb
                            order by country asc;""")
-        gopi.commit()
+        arun.commit()
         s = cursor.fetchall()
         i = [i for i in range(1, len(s)+1)]
         data = pd.DataFrame(s, columns=['Country'], index=i)
@@ -607,69 +607,69 @@ class host:
         return data
 
     def column_value(country, column_name, limit=10):
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         cursor.execute(f"""select {column_name}, count({column_name}) as count
                            from airbnb
                            where country='{country}'
                            group by {column_name}
                            order by count desc
                            limit {limit};""")
-        gopi.commit()
+        arun.commit()
         s = cursor.fetchall()
         data = pd.DataFrame(s, columns=[column_name, 'count'])
         return data[column_name].values.tolist()
 
     def column_value_names(country, column_name, order='desc', limit=10):
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         cursor.execute(f"""select {column_name}, count({column_name}) as count
                            from airbnb
                            where country='{country}'
                            group by {column_name}
                            order by {column_name} {order}
                            limit {limit};""")
-        gopi.commit()
+        arun.commit()
         s = cursor.fetchall()
         data = pd.DataFrame(s, columns=[column_name, 'count'])
         return data[column_name].values.tolist()
 
     def column_value_count_not_specified(country, column_name, limit=10):
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         cursor.execute(f"""select {column_name}, count({column_name}) as count
                            from airbnb
                            where country='{country}' and {column_name}!='Not Specified'
                            group by {column_name}
                            order by count desc
                            limit {limit};""")
-        gopi.commit()
+        arun.commit()
         s = cursor.fetchall()
         data = pd.DataFrame(s, columns=[column_name, 'count'])
         return data[column_name].values.tolist()
 
     def host(country, column_name, column_value, limit=10):
-        gopi = psycopg2.connect(host='localhost',
+        arun = psycopg2.connect(host='localhost',
                                 user='postgres',
                                 password='root',
                                 database='airbnb')
-        cursor = gopi.cursor()
+        cursor = arun.cursor()
         cursor.execute(f"""select distinct host_id, count(host_id) as count
                            from airbnb
                            where country='{country}' and {column_name}='{column_value}'
                            group by host_id
                            order by count desc
                            limit {limit};""")
-        gopi.commit()
+        arun.commit()
         s = cursor.fetchall()
         i = [i for i in range(1, len(s)+1)]
         data = pd.DataFrame(s, columns=['host_id', 'count'], index=i)
@@ -904,7 +904,7 @@ st.write('')
 
 
 with st.sidebar:
-    image_url = 'https://raw.githubusercontent.com/gopiashokan/Airbnb-Analysis/main/airbnb_banner.jpg'
+    image_url = 'https://raw.githubusercontent.com/arunashokan/Airbnb-Analysis/main/airbnb_banner.jpg'
     st.image(image_url, use_column_width=True)
 
     option = option_menu(menu_title='', options=['Migrating to SQL', 'Features Analysis', 'Host Analysis', 'Exit'],
@@ -952,12 +952,12 @@ elif option == 'Host Analysis':
 
 elif option == 'Exit':
     st.write('')
-    gopi = psycopg2.connect(host='localhost',
+    arun = psycopg2.connect(host='localhost',
                             user='postgres',
                             password='root',
                             database='airbnb')
-    cursor = gopi.cursor()
-    gopi.close()
+    cursor = arun.cursor()
+    arun.close()
 
     st.success('Thank you for your time. Exiting the application')
     st.balloons()
